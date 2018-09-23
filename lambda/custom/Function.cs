@@ -26,85 +26,145 @@ namespace sampleFactCsharp
 
         static Random rand = new Random();
 
+        public SkillResponse FunctionHandler(SkillRequest input, ILambdaContext context)
+        {
+            var response = new SkillResponse();
+            response.Response = new ResponseBody();
+            response.Response.ShouldEndSession = false;
+            response.Version = AlexaConstants.AlexaVersion;
+
+            if (input.Request.Type.Equals(AlexaConstants.LaunchRequest))
+            {
+
+                string locale = input.Request.Locale;
+                if (string.IsNullOrEmpty(locale))
+                {
+                    locale = USA_Locale;
+                }
+
+                IOutputSpeech prompt = new PlainTextOutputSpeech();
+                (prompt as PlainTextOutputSpeech).Text = "Hello";
+                response.Response.OutputSpeech = prompt;
+                response.SessionAttributes = new Dictionary<string, object>() { { LOCALENAME, locale } };
+
+                return response;
+            }
+
+            if (input.Request.Type.Equals(AlexaConstants.IntentRequest) && input.Request.Intent.Name == "MovePiece")            
+            {
+                input.Request.Intent.Slots.TryGetValue("Piece", out var piece);
+                input.Request.Intent.Slots.TryGetValue("Square", out var square);
+
+                var skillResponse = new SkillResponse
+                {
+                    Response = new ResponseBody()
+                };
+                skillResponse.Response.ShouldEndSession = false;
+                skillResponse.Response.OutputSpeech = new PlainTextOutputSpeech
+                {
+                    Text = "Piece " + piece?.Value + " | " + "Square " + square?.Value + input.Request.Intent.Name
+                };
+
+                return skillResponse;
+            }
+
+            if (input.Request.Type.Equals(AlexaConstants.IntentRequest) && input.Request.Intent.Name == "TakePiece")
+            {
+                input.Request.Intent.Slots.TryGetValue("Piece", out var piece);
+                input.Request.Intent.Slots.TryGetValue("Square", out var square);
+                input.Request.Intent.Slots.TryGetValue("Pawn", out var pawn);
+
+                var skillResponse = new SkillResponse
+                {
+                    Response = new ResponseBody()
+                };
+                skillResponse.Response.ShouldEndSession = false;
+                skillResponse.Response.OutputSpeech = new PlainTextOutputSpeech
+                {
+                    Text = "Pawn" + pawn?.Value + " | " + " Piece " + piece?.Value + " | " + "Square " + square?.Value + 
+                    input.Request.Intent.Name
+                };
+
+                return skillResponse;
+            }
+
+
+                return response;
+        }
+
         /// <summary>
         /// Application entry point
         /// </summary>
         /// <param name="input"></param>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        public SkillResponse FunctionHandler(SkillRequest input, ILambdaContext ctx)
-        {
-            context = ctx;
-            try
-            {
-                response = new SkillResponse();
-                response.Response = new ResponseBody();
-                response.Response.ShouldEndSession = false;
-                response.Version = AlexaConstants.AlexaVersion;
+        //public SkillResponse FunctionHandler(SkillRequest input, ILambdaContext ctx)
+        //{
+        //    context = ctx;
+        //    try
+        //    {
+        //        response = new SkillResponse();
+        //        response.Response = new ResponseBody();
+        //        response.Response.ShouldEndSession = false;
+        //        response.Version = AlexaConstants.AlexaVersion;
 
-                if (input.Request.Type.Equals(AlexaConstants.LaunchRequest))
-                {
-                    string locale = input.Request.Locale;
-                    if (string.IsNullOrEmpty(locale))
-                    {
-                        locale = USA_Locale;
-                    }
+        //        if (input.Request.Type.Equals(AlexaConstants.LaunchRequest))
+        //        {
+        //            string locale = input.Request.Locale;
+        //            if (string.IsNullOrEmpty(locale))
+        //            {
+        //                locale = USA_Locale;
+        //            }
 
-                    var facts = GetFacts(locale);
-                    ProcessLaunchRequest(facts, response.Response);
-                    response.SessionAttributes = new Dictionary<string, object>() {{LOCALENAME, locale}};
-                }
-                else
-                {
-                    if (input.Request.Type.Equals(AlexaConstants.IntentRequest))
-                    {
-                       string locale = string.Empty;
-                       Dictionary <string, object> dictionary = input.Session.Attributes;
-                       if (dictionary != null)
-                       {
-                           if (dictionary.ContainsKey(LOCALENAME))
-                           {
-                               locale = (string) dictionary[LOCALENAME];
-                           }
-                       }
-               
-                       if (string.IsNullOrEmpty(locale))
-                       {
-                            locale = input.Request.Locale;
-                       }
+        //            var facts = GetFacts(locale);
+        //            ProcessLaunchRequest(facts, response.Response);
+        //            response.SessionAttributes = new Dictionary<string, object>() {{LOCALENAME, locale}};
+        //        }
+        //        else
+        //        {
+        //            if (input.Request.Type.Equals(AlexaConstants.IntentRequest))
+        //            {
+        //               string locale = string.Empty;
+        //               Dictionary <string, object> dictionary = input.Session.Attributes;
+        //                if (dictionary != null)
+        //                {
+        //                    if (dictionary.ContainsKey(LOCALENAME))
+        //                    {
+        //                        locale = (string)dictionary[LOCALENAME];
+        //                    }
+        //                }
 
-                       if (string.IsNullOrEmpty(locale))
-                       {
-                            locale = USA_Locale; 
-                       }
+        //                locale = locale ??
+        //                         input.Request.Locale ??
+        //                         USA_Locale;
 
-                       response.SessionAttributes = new Dictionary<string, object>() {{LOCALENAME, locale}};
-                       var facts = GetFacts(locale);
+        //               response.SessionAttributes = new Dictionary<string, object>() {{LOCALENAME, locale}};
+        //               var facts = GetFacts(locale);
 
-                       if (IsDialogIntentRequest(input))
-                       {
-                            if (!IsDialogSequenceComplete(input))
-                            { // delegate to Alexa until dialog is complete
-                                CreateDelegateResponse();
-                                return response;
-                            }
-                       }
+        //               if (IsDialogIntentRequest(input))
+        //               {
+        //                    if (!IsDialogSequenceComplete(input))
+        //                    { // delegate to Alexa until dialog is complete
+        //                        CreateDelegateResponse();
+        //                        return response;
+        //                    }
+        //               }
 
-                       if (!ProcessDialogRequest(facts, input, response))
-                       {
-                           response.Response.OutputSpeech = ProcessIntentRequest(facts, input);
-                       }
-                    }
-                }
-                Log(JsonConvert.SerializeObject(response));
-                return response;
-            }
-            catch (Exception ex)
-            {
-                Log($"error :" + ex.Message);
-            }
-            return null; 
-        }
+        //               if (!ProcessDialogRequest(facts, input, response))
+        //               {
+        //                   response.Response.OutputSpeech = ProcessIntentRequest(facts, input);
+        //               }
+        //            }
+        //        }
+        //        Log(JsonConvert.SerializeObject(response));
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log($"error :" + ex.Message);
+        //    }
+        //    return null; 
+        //}
 
         /// <summary>
         /// Process and respond to the LaunchRequest with launch

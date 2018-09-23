@@ -6,7 +6,7 @@
         "dotnet lambda help",
         "All the command line options for the Lambda command can be specified in this file."
     ],
-    "profile"     : "malcolm",
+    "profile"     : "MyAWS",
     "region"      : "us-east-1",
     "configuration" : "Debug",
     "framework"     : "netcoreapp1.0",
@@ -14,7 +14,8 @@
     "function-memory-size" : 256,
     "function-timeout"     : 10,
     "function-handler"     : "sampleFactCsharp::sampleFactCsharp.Function::FunctionHandler",
-    "function-name"        : "sampleFactCsharp",
-    "function-role"        : "arn:aws:iam::234050264264:role/lambda_basic_execution",
-    "environment-variables" : ""
+    "function-name"        : "MovePiece",
+    "function-role"        : "arn:aws:iam::301662902730:role/lambda_basic_execution",
+    "environment-variables" : "",
+    "tracing-mode"          : "PassThrough"
 }
