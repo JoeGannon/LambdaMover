@@ -48,7 +48,8 @@ namespace sampleFactCsharp
                 var intent = _intents.FirstOrDefault(x => x.Name == input.Request.Intent.Name);
 
                 if (intent != null)
-                    text = intent.Process(input.Request.Intent);
+                    //some reason the file b comes with a dot
+                    text = intent.Process(input.Request.Intent).Replace(".", "");
             }
 
             response.Response.OutputSpeech = new PlainTextOutputSpeech
