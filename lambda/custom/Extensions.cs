@@ -36,6 +36,8 @@
 
             square = square.Replace("die", "d");
 
+            square = square.Replace(" ", "");
+
             if (square.Contains("before"))
                 square = "b4";
 

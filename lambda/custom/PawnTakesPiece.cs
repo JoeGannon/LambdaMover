@@ -10,17 +10,17 @@
         {
             intent.Slots.TryGetValue("Pawn", out var pawn);
             intent.Slots.TryGetValue("Square", out var square);
-         //   pawn.Value = pawn.Value.Replace(".", "");
+            pawn.Value = pawn.Value.Replace(".", "");
 
-        //    var text = pawn.Value.ToLower() + "x" + square.Value.ToSquare();
+            var text = pawn.Value.ToLower() + "x" + square.Value.ToSquare();
 
 
-            return //text;
-                $"{Name}: \n\r" +
-                   $"Piece: {pawn?.Value} \n\r " +
-                   //$"File: {file?.Value} \n\r " +
-                   //$"Rank: {rank?.Value} \n\r " +
-                   $"Square: {square?.Value}";
+            return text;
+                //$"{Name}: \n\r" +
+                //   $"Piece: {pawn?.Value} \n\r " +
+                //   //$"File: {file?.Value} \n\r " +
+                //   //$"Rank: {rank?.Value} \n\r " +
+                //   $"Square: {square?.Value}";
         }
     }
 }

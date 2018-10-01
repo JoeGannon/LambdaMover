@@ -13,15 +13,9 @@
             intent.Slots.TryGetValue("Rank", out var rank);
             intent.Slots.TryGetValue("Square", out var square);
 
-          //  var text = piece.Value.ToPiece() + (file?.Value.ToLower() ?? "") + (rank?.Value ?? "") + "x" + square.Value.ToSquare();
+            var text = piece.Value?.ToPiece() + (file?.Value?.ToLower() ?? "") + (rank?.Value ?? "") + "x" + square.Value.ToSquare();
 
-            return //text;
-
-                            $"{Name}: \n\r" +
-                               $"Piece: {piece?.Value} \n\r " +
-                               $"File: {file?.Value} \n\r " +
-                               $"Rank: {rank?.Value} \n\r " +
-                               $"Square: {square?.Value}";
+            return text;
         }
     }
 }
