@@ -24,7 +24,8 @@ namespace sampleFactCsharp
         {
             new MovePiece(),
             new TakePiece(),
-            new PawnTakesPiece()
+            new PawnTakesPiece(),
+            new PromotePiece()
         };
 
 

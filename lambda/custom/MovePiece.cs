@@ -15,17 +15,7 @@
 
             var text = (piece?.Value?.ToPiece() ?? "") + (file?.Value?.ToLower() ?? "") + (rank?.Value ?? "") + square.Value.ToSquare();
 
-            //if (square == null)
-            //{
-            //    text = "square was null";
-            //}
-
             return text;
-            //$"{Name}: \n\r" +
-            //   $"Piece: {piece?.Value} \n\r " +
-            //   $"File: {file?.Value} \n\r " +
-            //   $"Rank: {rank?.Value} \n\r " +
-            //   $"Square: {square?.Value}";
         }
     }
 }
