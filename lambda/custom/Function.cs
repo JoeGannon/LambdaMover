@@ -30,13 +30,12 @@ namespace sampleFactCsharp
 
         public SkillResponse FunctionHandler(SkillRequest input, ILambdaContext context)
         {
-            var skillResponse = new SkillResponse
-            {
-                Response = new ResponseBody()
-            };
-            skillResponse.Response.ShouldEndSession = false;
+            var response = new SkillResponse();
+            response.Response = new ResponseBody();
+            response.Response.ShouldEndSession = false;
+            response.Version = AlexaConstants.AlexaVersion;
 
-            var text = "";
+            var text = "Hello";
 
             if (input.Request.Type.Equals(AlexaConstants.LaunchRequest))
             {
@@ -45,24 +44,29 @@ namespace sampleFactCsharp
 
             if (input.Request.Type.Equals(AlexaConstants.IntentRequest))
             {
-                var intent = _intents.First(x => x.Name == input.Request.Intent.Name);
+                var intent = _intents.FirstOrDefault(x => x.Name == input.Request.Intent.Name);
 
-                text = intent.Process(input.Request.Intent);
+                if (intent != null)
+                    text = intent.Process(input.Request.Intent);
             }
 
-            skillResponse.Response.OutputSpeech = new PlainTextOutputSpeech
+            response.Response.OutputSpeech = new PlainTextOutputSpeech
             {
                 Text = text
             };
 
-            return skillResponse;
+            return response;
         }
 
         private static SkillResponse ProcessLaunch(SkillRequest input)
         {
             var response = new SkillResponse
             {
-                Response = new ResponseBody { ShouldEndSession = false },
+                Response = new ResponseBody { ShouldEndSession = false , OutputSpeech = new PlainTextOutputSpeech
+                {
+                    Text = "Hello"
+                }},
+                
                 Version = AlexaConstants.AlexaVersion
             };
 
