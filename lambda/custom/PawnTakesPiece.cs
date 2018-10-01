@@ -16,11 +16,6 @@
 
 
             return text;
-                //$"{Name}: \n\r" +
-                //   $"Piece: {pawn?.Value} \n\r " +
-                //   //$"File: {file?.Value} \n\r " +
-                //   //$"Rank: {rank?.Value} \n\r " +
-                //   $"Square: {square?.Value}";
         }
     }
 }
