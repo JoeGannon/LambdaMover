@@ -13,7 +13,13 @@
             intent.Slots.TryGetValue("Rank", out var rank);
             intent.Slots.TryGetValue("Square", out var square);
 
-            var text = piece.Value?.ToPiece() + (file?.Value?.ToLower() ?? "") + (rank?.Value ?? "") + "x" + square.Value.ToSquare();
+            intent.Slots.TryGetValue("Eight", out var eight);
+
+            var f = file?.Value;
+            if (eight?.Value != null)
+                f = eight.Value;
+
+            var text = piece.Value?.ToPiece() + (f?.ToLower() ?? "") + (rank?.Value ?? "") + "x" + square.Value.ToSquare();
 
             return text;
         }
@@ -25,7 +31,13 @@
             intent.Slots.TryGetValue("Rank", out var rank);
             intent.Slots.TryGetValue("Square", out var square);
 
-            var text = piece?.Value + (file?.Value?.ToLower() ?? "") + (rank?.Value ?? "") + " takes " + square.Value.ToSquare();
+            intent.Slots.TryGetValue("Eight", out var eight);
+
+            var f = file?.Value;
+            if (eight?.Value != null)
+                f = eight.Value;
+
+            var text = piece?.Value + (f?.ToLower() ?? "") + (rank?.Value ?? "") + " takes " + square.Value.ToSquare();
 
             return text;
         }

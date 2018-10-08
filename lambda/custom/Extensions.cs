@@ -16,7 +16,13 @@
                 case "knight":
                     result = "N";
                     break;
+                case "nine":
+                    result = "N";
+                    break;
                 case "rook":
+                    result = "R";
+                    break;
+                case "rock":
                     result = "R";
                     break;
                 case "queen":
