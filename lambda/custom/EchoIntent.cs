@@ -5,6 +5,7 @@ namespace sampleFactCsharp
     public interface EchoIntent 
     {
         string Name { get; }
-        string Process(Intent intent);
+        string AlgebraicMove(Intent intent);
+        string SpokenMove(Intent intent);
     }
 }

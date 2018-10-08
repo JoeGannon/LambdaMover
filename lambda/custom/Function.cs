@@ -5,8 +5,6 @@ using Newtonsoft.Json;
 using AlexaAPI;
 using AlexaAPI.Request;
 using AlexaAPI.Response;
-using System.IO;
-using System.Text.RegularExpressions;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializerAttribute(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
@@ -14,11 +12,26 @@ using System.Text.RegularExpressions;
 namespace sampleFactCsharp
 {
     using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using Amazon;
+    using Amazon.IotData;
 
     public class Function
     {
         const string LOCALENAME = "locale";
         const string USA_Locale = "en-US";
+
+        private static readonly string _endpoint = Environment.GetEnvironmentVariable("Endpoint");
+        private static readonly string _topic = Environment.GetEnvironmentVariable("Topic");
+        private static readonly string _accessKey = Environment.GetEnvironmentVariable("AccessKey");
+        private static readonly string _secretKey = Environment.GetEnvironmentVariable("Secret");
+
+        private readonly AmazonIotDataClient _client = new AmazonIotDataClient(_accessKey, _secretKey, new AmazonIotDataConfig
+        {
+            RegionEndpoint = RegionEndpoint.USEast1,
+            ServiceURL = _endpoint
+        });
 
         private readonly List<EchoIntent> _intents = new List<EchoIntent>
         {
@@ -29,15 +42,14 @@ namespace sampleFactCsharp
             new CastleKing()
         };
 
-
-        public SkillResponse FunctionHandler(SkillRequest input, ILambdaContext context)
+        public async Task<SkillResponse> FunctionHandler(SkillRequest input, ILambdaContext context)
         {
             var response = new SkillResponse();
             response.Response = new ResponseBody();
             response.Response.ShouldEndSession = false;
             response.Version = AlexaConstants.AlexaVersion;
-
-            var text = "Hello";
+          
+            var spokenMove = "";
 
             if (input.Request.Type.Equals(AlexaConstants.LaunchRequest))
             {
@@ -46,16 +58,24 @@ namespace sampleFactCsharp
 
             if (input.Request.Type.Equals(AlexaConstants.IntentRequest))
             {
-                var intent = _intents.FirstOrDefault(x => x.Name == input.Request.Intent.Name);
+                var intent = _intents.First(x => x.Name == input.Request.Intent.Name);
 
-                if (intent != null)
-                    //some reason the file b comes with a dot
-                    text = intent.Process(input.Request.Intent).Replace(".", "");
+                var algebraicMove = intent.AlgebraicMove(input.Request.Intent).Replace(".", "");
+
+                await _client.PublishAsync(new Amazon.IotData.Model.PublishRequest()
+                {
+                    Topic = _topic,
+                    Payload = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(algebraicMove)),
+                    Qos = 0
+                });
+
+                //some reason the file b comes with a dot
+                spokenMove = intent.SpokenMove(input.Request.Intent).Replace(".", "");
             }
 
             response.Response.OutputSpeech = new PlainTextOutputSpeech
             {
-                Text = text
+                Text = spokenMove
             };
 
             return response;
@@ -67,7 +87,7 @@ namespace sampleFactCsharp
             {
                 Response = new ResponseBody { ShouldEndSession = false , OutputSpeech = new PlainTextOutputSpeech
                 {
-                    Text = "Hello"
+                    Text = "Ready"
                 }},
                 
                 Version = AlexaConstants.AlexaVersion
