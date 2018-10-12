@@ -56,7 +56,7 @@ namespace sampleFactCsharp
                 return ProcessLaunch(input);
             }
 
-            if (input.Request.Type.Equals(AlexaConstants.IntentRequest))
+            else if (input.Request.Type.Equals(AlexaConstants.IntentRequest))
             {
                 var intent = _intents.First(x => x.Name == input.Request.Intent.Name);
 
@@ -72,6 +72,16 @@ namespace sampleFactCsharp
                 //some reason the file b comes with a dot
                 spokenMove = intent.SpokenMove(input.Request.Intent).Replace(".", "");
             }
+
+            else if (input.Request.Type.Equals(AlexaConstants.CanFulfillIntentRequest))
+            {
+                var intent = _intents.First(x => x.Name == input.Request.Intent.Name);
+
+                response.Response.canFulfillIntent = new CanFulfillIntent();
+
+                return response;
+            }
+
 
             response.Response.OutputSpeech = new PlainTextOutputSpeech
             {

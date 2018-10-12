@@ -19,6 +19,8 @@ namespace AlexaAPI.Response
 
         [JsonProperty("directives", NullValueHandling = NullValueHandling.Ignore)]
         public IList<IDirective> Directives {get; set;} = new List<IDirective>();
+
+        public CanFulfillIntent canFulfillIntent { get; set; } = new CanFulfillIntent();
     }
 }
 

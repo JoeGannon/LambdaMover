@@ -20,6 +20,7 @@ namespace AlexaAPI
         public const string StartOverIntent = "AMAZON.StartOverIntent";
         public const string LaunchRequest = "LaunchRequest";
         public const string IntentRequest = "IntentRequest";
+        public const string CanFulfillIntentRequest = "CanFulfillIntentRequest";
         public const string SessionEndedRequest = "SessionEndedRequest";
         public const string NoIntent = "AMAZON.NoIntent";
         public const string YesIntent = "AMAZON.YesIntent";
